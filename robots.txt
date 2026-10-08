@@ -1,0 +1,6 @@
+# https://pedro-serio.netlify.app/robots.txt
+User-agent: *
+Allow: /
+
+# Thank-you and 404 pages are not for crawlers
+Disallow: /thanks/

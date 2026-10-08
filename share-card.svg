@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#f7f8f7"/>
+  <image href="connective-tissue.svg" x="0" y="0" width="1200" height="630" opacity="0.10" preserveAspectRatio="xMidYMid slice"/>
+  <rect x="0" y="0" width="1200" height="8" fill="#2a5c6b"/>
+
+  <!-- brand hex -->
+  <g transform="translate(72,72)">
+    <polygon points="28,3 50,17 50,45 28,59 6,45 6,17" fill="#0F9E8C" stroke="#1A1D1F" stroke-width="2"/>
+    <text x="28" y="39" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="19" font-weight="700" fill="#F7F8F7">PS</text>
+    <text x="76" y="38" font-family="'JetBrains Mono', monospace" font-size="26" font-weight="700" fill="#1a1d1f">Pedro Serio</text>
+  </g>
+
+  <text x="72" y="210" font-family="'JetBrains Mono', monospace" font-size="24" font-weight="700" fill="#5f5e5a" letter-spacing="2">BIO DEVOPS DEVELOPER — AWS FOR GENOMICS &amp; BIOTECH</text>
+
+  <text x="72" y="300" font-family="'JetBrains Mono', monospace" font-size="52" font-weight="700" fill="#2a5c6b">I turn messy scientific data operations</text>
+  <text x="72" y="368" font-family="'JetBrains Mono', monospace" font-size="52" font-weight="700" fill="#2a5c6b">into cloud infrastructure that doesn't</text>
+  <text x="72" y="436" font-family="'JetBrains Mono', monospace" font-size="52" font-weight="700" fill="#2a5c6b">fail quietly.</text>
+
+  <line x1="72" y1="510" x2="1128" y2="510" stroke="#d9d7cd" stroke-width="2"/>
+  <text x="72" y="560" font-family="Inter, sans-serif" font-size="28" fill="#1a1d1f">Event-driven pipelines · CDK · Lambda · DynamoDB · LIMS integration</text>
+  <text x="1128" y="560" text-anchor="end" font-family="'JetBrains Mono', monospace" font-size="26" font-weight="700" fill="#3fa37a">pedro-serio.netlify.app</text>
+</svg>

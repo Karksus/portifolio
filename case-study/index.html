@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case Study — LIMS Integration | Pedro Serio</title>
+<meta name="description" content="How an event-driven AWS pipeline replaced a manual, error-prone LIMS workflow.">
+<link rel="canonical" href="https://pedro-serio.netlify.app/case-study/">
+<meta name="author" content="Pedro Serio">
+<meta name="theme-color" content="#f7f8f7">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Pedro Serio">
+<meta property="og:title" content="Case Study — LIMS Integration | Pedro Serio">
+<meta property="og:description" content="How an event-driven AWS pipeline replaced a manual, error-prone LIMS workflow.">
+<meta property="og:url" content="https://pedro-serio.netlify.app/case-study/">
+<meta property="og:image" content="https://pedro-serio.netlify.app/share-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Pedro Serio — Bio DevOps developer, cloud infrastructure for genomics and biotech.">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Case Study — LIMS Integration | Pedro Serio">
+<meta name="twitter:description" content="How an event-driven AWS pipeline replaced a manual, error-prone LIMS workflow.">
+<meta name="twitter:image" content="https://pedro-serio.netlify.app/share-card.png">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/headshot.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
+<style>:root{--ink:#1a1d1f;--bg:#f7f8f7;--main:#2a5c6b;--accent:#3fa37a;--muted:#5f5e5a;--card-bg:#fff;--rule:#d9d7cd}*{box-sizing:border-box}html,body{background:var(--bg);color:var(--ink);margin:0;padding:0;font-family:Inter,sans-serif;line-height:1.6}body{flex-direction:column;min-height:100vh;display:flex}main{flex:1}h1,h2,h3{margin:0 0 .6em;line-height:1.25}a{color:var(--main)}.site-header{justify-content:space-between;align-items:center;gap:24px;max-width:720px;margin:0 auto;padding:20px 32px;display:flex}.brand{color:var(--ink);align-items:center;gap:10px;padding:8px 0;text-decoration:none;display:flex}.brand:focus-visible{outline:2px solid var(--main);outline-offset:2px;border-radius:4px}.brand-hex{flex-shrink:0;width:28px;height:28px}.brand-name{color:var(--ink);font-family:JetBrains Mono,monospace;font-size:.95rem;font-weight:600}.site-nav a{color:var(--main);border-bottom:1px solid #0000;font-size:.95rem;font-weight:500;padding:12px 4px;text-decoration:none;transition:border-color .15s;display:inline-block}.site-nav a:hover,.site-nav a:focus-visible{border-color:var(--main)}.site-nav a:focus-visible{outline:2px solid var(--main);outline-offset:2px;border-radius:4px}.site-footer{text-align:center;padding:28px 32px 40px;font-size:.85rem}.cv-link{color:var(--muted);border-bottom:1px solid var(--rule);padding:11px 6px;text-decoration:none;display:inline-block}.cv-link:hover,.cv-link:focus-visible{color:var(--main);border-color:var(--main)}.cv-link:focus-visible{outline:2px solid var(--main);outline-offset:2px;border-radius:4px}.wrap{max-width:720px;margin:0 auto;padding:0 32px}.cta-button{background:var(--accent);color:var(--ink);border-radius:6px;padding:12px 24px;font-size:.98rem;font-weight:600;text-decoration:none;transition:background .15s;display:inline-block}.cta-button:hover,.cta-button:focus-visible{background:#4aae85}.cta-button:focus-visible{outline:2px solid var(--main);outline-offset:3px;border-radius:6px}@media (width<=600px){.site-header{padding:16px 20px}.wrap{padding:0 20px}}
+.case-study[data-astro-cid-qpzrxw4g]{padding-top:56px;padding-bottom:80px}.case-study[data-astro-cid-qpzrxw4g] h1[data-astro-cid-qpzrxw4g]{color:var(--main);margin-bottom:40px;font-family:JetBrains Mono,monospace;font-size:1.6rem}.beat[data-astro-cid-qpzrxw4g]{margin-bottom:44px}.beat[data-astro-cid-qpzrxw4g] h2[data-astro-cid-qpzrxw4g]{text-transform:uppercase;letter-spacing:.04em;color:var(--main);margin-bottom:12px;font-size:1.05rem;font-weight:700}.beat[data-astro-cid-qpzrxw4g] p[data-astro-cid-qpzrxw4g]{max-width:640px;font-size:1.02rem}.diagram[data-astro-cid-qpzrxw4g]{margin:28px 0 0;padding:0}.diagram[data-astro-cid-qpzrxw4g] img[data-astro-cid-qpzrxw4g]{border:1px solid var(--rule);background:#fff;border-radius:6px;width:100%;max-width:100%;height:auto}.diagram[data-astro-cid-qpzrxw4g] figcaption[data-astro-cid-qpzrxw4g]{color:var(--muted);margin-top:10px;font-size:.85rem}.bio-block[data-astro-cid-qpzrxw4g]{border-top:1px solid var(--rule);align-items:flex-start;gap:24px;margin:56px 0;padding-top:40px;display:flex}.headshot[data-astro-cid-qpzrxw4g]{object-fit:cover;border-radius:50%;flex-shrink:0;width:96px;height:96px}.bio-block[data-astro-cid-qpzrxw4g] h2[data-astro-cid-qpzrxw4g]{text-transform:uppercase;letter-spacing:.04em;color:var(--main);margin-bottom:12px;font-size:1.05rem;font-weight:700}.bio-block[data-astro-cid-qpzrxw4g] p[data-astro-cid-qpzrxw4g]{max-width:560px;color:var(--ink);font-size:.98rem}.cta-section[data-astro-cid-qpzrxw4g]{padding-top:24px}.cta-section[data-astro-cid-qpzrxw4g] h2[data-astro-cid-qpzrxw4g]{margin-bottom:10px;font-size:1.3rem}.cta-section[data-astro-cid-qpzrxw4g] p[data-astro-cid-qpzrxw4g]{color:var(--ink);margin-bottom:20px}.cta-row[data-astro-cid-qpzrxw4g]{flex-wrap:wrap;align-items:center;gap:12px;display:flex}.copy-button[data-astro-cid-qpzrxw4g]{border:1px solid var(--rule);color:var(--muted);cursor:pointer;background:0 0;border-radius:6px;padding:13px 18px;font-family:Inter,sans-serif;font-size:.92rem;font-weight:500;transition:border-color .15s,color .15s}.copy-button[data-astro-cid-qpzrxw4g]:hover,.copy-button[data-astro-cid-qpzrxw4g]:focus-visible{border-color:var(--main);color:var(--main)}.copy-button[data-astro-cid-qpzrxw4g]:focus-visible{outline:2px solid var(--main);outline-offset:2px;border-radius:6px}.copy-feedback[data-astro-cid-qpzrxw4g]{min-height:1.2em;color:var(--main);margin:10px 0 0;font-size:.88rem}@media (width<=600px){.bio-block[data-astro-cid-qpzrxw4g]{flex-direction:column;align-items:flex-start}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a href="/" class="brand">
+    <svg class="brand-hex" viewBox="0 0 100 100" aria-hidden="true"><polygon points="50,6 88,28 88,72 50,94 12,72 12,28" fill="#0F9E8C" stroke="#1A1D1F" stroke-width="2"></polygon><text x="50" y="60" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="32" font-weight="700" fill="#F7F8F7">PS</text></svg>
+    <span class="brand-name">Pedro Serio</span>
+  </a>
+  <nav class="site-nav" aria-label="Primary">
+    <a href="/#contact">Get in touch</a>
+  </nav>
+</header>
+<main>
+<article class="wrap case-study" data-astro-cid-qpzrxw4g>
+  <h1 data-astro-cid-qpzrxw4g>LIMS-to-platform integration</h1>
+  <section class="beat" data-astro-cid-qpzrxw4g>
+    <h2 data-astro-cid-qpzrxw4g>The problem</h2>
+    <p data-astro-cid-qpzrxw4g>A sample-processing workflow at a genomics lab was running almost entirely by hand: someone would pull data off scanned documents, retype it into a spreadsheet, run two separate scripts on a server, update the spreadsheet again, then manually update the LIMS. Each sample took two to five minutes of a team member's time, sequentially, one at a time. It was slow, it ate hours from a team that had better things to do, and worse, it had already let real errors through more than once.</p>
+  </section>
+  <section class="beat" data-astro-cid-qpzrxw4g>
+    <h2 data-astro-cid-qpzrxw4g>What I did</h2>
+    <p data-astro-cid-qpzrxw4g>Rather than build new infrastructure from scratch, I plugged into a DynamoDB table the team already had feeding their LIMS integration, reuse over reinvention. On top of that, I built an event-driven pipeline: DynamoDB Streams trigger a validation Lambda the moment new data lands, and an SNS topic with filtered subscriptions splits the result into two paths, a failure path that posts a detailed alert straight to the team's Teams channel, and a success path that produces the files needed to auto-update the LIMS and the sample-tracking platform.</p>
+    <figure class="diagram" data-astro-cid-qpzrxw4g>
+      <img src="/architecture-diagram.png" width="1400" height="795" loading="lazy" decoding="async" alt="Architecture diagram: LIMS data flows through a populate-table Lambda into a DynamoDB table, triggers DynamoDB Streams, a validation Lambda checks the record using S3 and Secrets Manager, then an SNS topic filters to either a failure path (a Teams alert) or a success path (generates files that update LIMS and an existing workflow). A separate GitHub Actions pipeline deploys versioned Lambda assets to S3." data-astro-cid-qpzrxw4g>
+      <figcaption data-astro-cid-qpzrxw4g>The pipeline, hand-built in draw.io.</figcaption>
+    </figure>
+  </section>
+  <section class="beat" data-astro-cid-qpzrxw4g>
+    <h2 data-astro-cid-qpzrxw4g>What came of it</h2>
+    <p data-astro-cid-qpzrxw4g>Once data enters the pipeline, samples now process in parallel in seconds, down from two to five minutes each, done one at a time, by hand. Manual work per sample dropped to about a minute of data collection; everything after that is automatic. When I ran a validation comparing the automated results against the old manual process, the automation caught errors the manual process had been missing, showing that the new system can be more accurate.</p>
+  </section>
+  <section class="bio-block" data-astro-cid-qpzrxw4g>
+    <img src="/headshot.jpg" width="288" height="300" loading="lazy" decoding="async" alt="Photo of Pedro Serio" class="headshot" data-astro-cid-qpzrxw4g>
+    <div data-astro-cid-qpzrxw4g>
+      <h2 data-astro-cid-qpzrxw4g>Who built this</h2>
+      <p data-astro-cid-qpzrxw4g>I started on an operational bioinformatics team, the person you called when something broke, solve it fast, code it fast, keep it simple. Our platform ran on AWS, and a nearby team, Bio DevOps, was building it properly: real infrastructure, not patches. I got close to them, studied on my own, started writing small automations in boto3 and Lambda. Within a few months I was building in CDK, deploying real workloads, and the team's coordinator brought me on. Today I work as a (Bio)DevOps developer, building the automation and integrations that connect cloud infrastructure, LIMS, and bioinformatics pipelines, and I understand cloud architecture well enough to own it end to end, not just operate inside someone else's design.</p>
+    </div>
+  </section>
+  <section class="cta-section" id="contact" data-astro-cid-qpzrxw4g>
+    <h2 data-astro-cid-qpzrxw4g>Get in touch</h2>
+    <p data-astro-cid-qpzrxw4g>If this looks like the kind of problem you need solved, send a message through the form on the home page, or reply to the email below.</p>
+    <p data-astro-cid-qpzrxw4g><a href="/#contact">Send a message →</a></p>
+    <div class="cta-row" data-astro-cid-qpzrxw4g>
+      <a href="mailto:pedroaserio@gmail.com" class="cta-button" data-astro-cid-qpzrxw4g>pedroaserio@gmail.com</a>
+      <button type="button" class="copy-button" data-email="pedroaserio@gmail.com" data-astro-cid-qpzrxw4g>Copy address</button>
+    </div>
+    <p class="copy-feedback" role="status" aria-live="polite" data-astro-cid-qpzrxw4g></p>
+  </section>
+</article>
+<script type="module">var e=document.querySelector(`.copy-button`),t=document.querySelector(`.copy-feedback`);e&&t&&e.addEventListener(`click`,async()=>{let n=e.getAttribute(`data-email`)||``;try{await navigator.clipboard.writeText(n),t.textContent=`Copied to clipboard.`}catch{t.textContent=`Copy manually: ${n}`}setTimeout(()=>{t.textContent=``},4e3)});</script>
+</main>
+<footer class="site-footer">
+  <a href="/Pedro_Serio_CV.pdf" class="cv-link">Download CV (PDF)</a>
+</footer>
+</body>
+</html>
