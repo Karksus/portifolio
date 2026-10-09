@@ -7,6 +7,12 @@ No build step, no framework — Netlify serves the files as-is.
 **Live:** https://pedro-serio.netlify.app
 **Hardening review (break-your-own-site):** [`HARDENING-REVIEW.md`](HARDENING-REVIEW.md)
 
+**Deploy status (verified 2026-10-08):** all hardening changes are live on the
+deployed site — custom `404.html`, `robots.txt`, `sitemap.xml`, `share-card.png`,
+the CSP/security headers, and the hardened form are all confirmed in production
+(HTTP checks, not just local files). See
+[Deployment verification](HARDENING-REVIEW.md#deployment-verification).
+
 ## Structure
 
 ```
@@ -53,6 +59,12 @@ carries `Person` JSON-LD. The thanks page is `noindex, nofollow`.
 
 To make the site findable, submit `https://pedro-serio.netlify.app/sitemap.xml`
 in Google Search Console after deploying.
+
+The four discovery assets are verified live: `robots.txt` (`200 text/plain`),
+`sitemap.xml` (`200 application/xml`), `share-card.png` (`200 image/png`), and
+unknown paths return `404` with the custom page. `share-card.png` still needs a
+human/social-debugger check for appearance (Facebook Sharing Debugger, LinkedIn
+Post Inspector, or a Slack/Discord unfurl).
 
 ## Form hardening
 

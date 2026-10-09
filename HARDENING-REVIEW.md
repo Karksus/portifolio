@@ -1,9 +1,9 @@
 # Hardening Review — "Break Your Own Site"
 
 **Site:** https://pedro-serio.netlify.app
-**Date:** 2026-10-07
+**Date:** 2026-10-07 · **Deploy re-verified:** 2026-10-08
 **Reviewer:** Pedro (self) · test harness run by the agent
-**Status:** fix-nows applied locally, ready for Checkpoint 2 review and redeploy
+**Status:** fix-nows applied and **deployed live** (re-verified 2026-10-08); awaiting Checkpoint 2 review
 
 ---
 
@@ -20,7 +20,7 @@
 | Empty submit (UI) | Injected probe calls `requestSubmit()` | browser blocks; name/email/message flagged |
 | Garbage email | Injected probe sets `not-an-email` | blocked with localized message |
 | Click everything | curl over every `href`; headless Chrome + iPhone UA | all internal links 200; CV PDF 200; mailto only |
-| Unknown URL | `GET /definitely-not-a-page` | 404 (Netlify default page, pre-fix) |
+| Unknown URL | `GET /definitely-not-a-page` | pre-fix: 404 (Netlify default page) → post-fix live: HTTP 404 with the custom `404.html` |
 | Untested "device" | headless Chromium with iPhone UA + narrow viewport | no horizontal overflow; responsive grid collapses |
 | Speed | curl timing + compression + headless FCP | TTFB 36–228 ms; brotli enabled; HTML 10.8 KB |
 | Findability | web search for name | LinkedIn first, **portfolio site absent** |
@@ -38,13 +38,13 @@ Raw machine-readable evidence (pre-fix vs post-fix) is reproduced in `docs/break
 | 3 | Leading/trailing whitespace saved to submissions | Inline trim on `input` | trimmed `"  Bob  "` → `"Bob"` |
 | 12 | 1-character name and 1-char messages accepted | `minlength="2"` / `minlength="10"` + `title` hints | probe: msgMinlen 10 |
 | 4 | No double-submit guard: two fast clicks = two submissions | JS disables button + "Sending…" on submit; `noscript` fallback text | probe: submit events 2 → 1; button disabled |
-| 5 | No `robots.txt` / `sitemap.xml` | added both, sitemap lists home + case study | local serve: 200 both |
-| 6 | No custom 404 (Netlify default page) | added `404.html` | file present, Netlify auto-serves |
-| 7 | No canonical / Open Graph / Twitter card → bare link previews | added canonical + full OG + Twitter + `theme-color` to all pages | grep of built HTML |
-| 8 | No structured data for a person | JSON-LD `Person` on home | grep |
-| 9 | No share image (`og:image` was absent) | generated `share-card.png` 1200×630 | dimensions verified |
+| 5 | No `robots.txt` / `sitemap.xml` | added both, sitemap lists home + case study | live: `robots.txt` 200 text/plain (135 B), `sitemap.xml` 200 application/xml (451 B) |
+| 6 | No custom 404 (Netlify default page) | added `404.html` | live: unknown path → HTTP 404 with custom page (`<title>Page not found — Pedro Serio</title>`) |
+| 7 | No canonical / Open Graph / Twitter card → bare link previews | added canonical + full OG + Twitter + `theme-color` to all pages | grep of built HTML; live home carries `og:title` |
+| 8 | No structured data for a person | JSON-LD `Person` on home | grep; present in live home |
+| 9 | No share image (`og:image` was absent) | generated `share-card.png` 1200×630 | dimensions verified; live 200 image/png (39,642 B) |
 | 10 | Thanks page only `noindex` | `noindex, nofollow` | grep |
-| 11 | No CSP / frame / permissions headers; predictable caching | CSP, `X-Frame-Options: DENY`, `Permissions-Policy`, 1-week asset cache in `netlify.toml` | header config |
+| 11 | No CSP / frame / permissions headers; predictable caching | CSP, `X-Frame-Options: DENY`, `Permissions-Policy`, 1-week asset cache in `netlify.toml` | live `curl -I` returns the CSP header |
 
 ## Known limitations (named, not hidden)
 
@@ -72,10 +72,34 @@ Raw machine-readable evidence (pre-fix vs post-fix) is reproduced in `docs/break
 | Headless FCP | ~1.6 s (local harness; indicative only) | injected probe |
 | PSI | blocked — `429 Quota exceeded` | documented |
 
+## Deployment verification
+
+Re-checked against the live site on **2026-10-08** (not localhost). Confirms the
+fix-nows actually shipped, not just committed:
+
+| Check | Command | Live result | Pass |
+|---|---|---|---|
+| `robots.txt` | `curl -sI $BASE/robots.txt` | `200`, `text/plain`, 135 B | ✅ |
+| `sitemap.xml` | `curl -sI $BASE/sitemap.xml` | `200`, `application/xml`, 451 B | ✅ |
+| `share-card.png` | `curl -sI $BASE/share-card.png` | `200`, `image/png`, 39,642 B | ✅ |
+| Custom 404 | `curl -s $BASE/this-page-nope` | `HTTP 404` + custom page `<title>Page not found — Pedro Serio</title>` | ✅ |
+| Home seeded | `curl -s $BASE/ \| grep og:title` | `og:title`, JSON-LD `Person`, `maxlength` present | ✅ |
+| Security headers | `curl -sI $BASE/ \| grep -i content-security-policy` | CSP present | ✅ |
+
+Note: requesting `/404.html` directly returns `200` (it is just a file). The
+custom 404 is only proven by requesting a **nonexistent path** and confirming
+both `404` status and the custom page body. Netlify injects a hosting comment +
+HUD script into HTML, so live byte sizes are slightly larger than the local
+files — expected, not a broken deploy.
+
+`share-card.png` serving is confirmed, but its **appearance** still needs a
+human eye or a social debugger (Facebook Sharing Debugger, LinkedIn Post
+Inspector, or a Slack/Discord unfurl).
+
 ## Checkpoint 2 — reviewer checklist
 
 - [ ] Reproduce the four form abuse cases against the fixed deploy (empty, garbage, whitespace, double submit).
-- [ ] Confirm `robots.txt`, `sitemap.xml`, custom 404, and `share-card.png` load.
+- [x] Confirm `robots.txt`, `sitemap.xml`, custom 404, and `share-card.png` load. *(verified live 2026-10-08 — see Deployment verification)*
 - [ ] Validate the social preview with a card validator for `https://pedro-serio.netlify.app/`.
 - [ ] Confirm the security headers are present on the deployed response (`curl -I`).
 - [ ] Read the known-limitations list and decide whether any must become fix-now.
