@@ -1,0 +1,12 @@
+{
+  "name": "pedro-serio-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static portfolio site for Pedro Serio, with a Netlify Function for contact-form validation.",
+  "scripts": {
+    "test": "node tests/contact.test.js && node tests/contact.handler.test.js"
+  },
+  "dependencies": {
+    "@netlify/blobs": "^11.1.4"
+  }
+}

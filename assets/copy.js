@@ -1,0 +1,1 @@
+var e=document.querySelector(`.copy-button`),t=document.querySelector(`.copy-feedback`);e&&t&&e.addEventListener(`click`,async()=>{let n=e.getAttribute(`data-email`)||``;try{await navigator.clipboard.writeText(n),t.textContent=`Copied to clipboard.`}catch{t.textContent=`Copy manually: ${n}`}setTimeout(()=>{t.textContent=``},4e3)});

@@ -3,13 +3,19 @@
 
 [build]
   publish = "."
+  # @netlify/blobs (used by the contact function for dedup) requires Node 22.12+.
+  [build.environment]
+    NODE_VERSION = "22"
 
 # Netlify Forms is enabled automatically when a <form data-netlify="true">
 # is present in the deployed HTML. There is nothing to configure here, but the
 # form must exist in the HTML *at deploy time*.
 #
-# There is intentionally no redirect for the form action: the form posts to
-# /thanks/, which is a real page, and Netlify intercepts the POST to record it.
+# The form's action is /.netlify/functions/contact, which Netlify routes to the
+# function instead of the forms handler (the forms handler skips /.netlify/*
+# and any path that has a function). The function validates, trims and
+# de-duplicates, then POSTs the clean submission to "/" where Netlify Forms
+# records it in the dashboard.
 
 # --- Security headers -------------------------------------------------------
 [[headers]]
@@ -21,8 +27,8 @@
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
     Content-Security-Policy = """
       default-src 'self';
-      script-src 'self' 'unsafe-inline';
-      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+      script-src 'self';
+      style-src 'self' https://fonts.googleapis.com;
       font-src https://fonts.gstatic.com;
       img-src 'self' data:;
       connect-src 'self';
@@ -50,5 +56,17 @@
     Cache-Control = "public, max-age=604800"
 [[headers]]
   for = "/*.pdf"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+[[headers]]
+  for = "/*.webp"
   [headers.values]
     Cache-Control = "public, max-age=604800"

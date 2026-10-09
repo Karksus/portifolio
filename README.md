@@ -7,11 +7,13 @@ No build step, no framework — Netlify serves the files as-is.
 **Live:** https://pedro-serio.netlify.app
 **Hardening review (break-your-own-site):** [`HARDENING-REVIEW.md`](HARDENING-REVIEW.md)
 
-**Deploy status (verified 2026-10-08):** all hardening changes are live on the
-deployed site — custom `404.html`, `robots.txt`, `sitemap.xml`, `share-card.png`,
-the CSP/security headers, and the hardened form are all confirmed in production
-(HTTP checks, not just local files). See
-[Deployment verification](HARDENING-REVIEW.md#deployment-verification).
+**Deploy status:** round-1 hardening (custom `404.html`, `robots.txt`,
+`sitemap.xml`, `share-card.png`, security headers) is **live** (verified
+2026-10-08). Round-2 hardening (server-side form validation, strict CSP without
+`'unsafe-inline'`, WebP images) is **applied and verified locally** and ships on
+the next deploy. See
+[Deployment verification](HARDENING-REVIEW.md#deployment-verification) and
+[Round-2 local verification](HARDENING-REVIEW.md#round-2-local-verification-2026-10-08).
 
 ## Structure
 
@@ -24,10 +26,14 @@ robots.txt              Crawler rules
 sitemap.xml             Sitemap (home + case study)
 share-card.svg/.png     1200×630 social-share image (og:image)
 netlify.toml            Publish dir, security headers, caching
+assets/                 External CSS (per page) + form.js / copy.js
+netlify/functions/      contact.js — server-side validation + dedup
+tests/                  Node unit + handler tests for the function
+package.json            Declares @netlify/blobs (used by the function)
 favicon.svg             Site icon
 connective-tissue.svg   Hero background motif
-headshot.jpg            Case-study portrait
-architecture-diagram.png Case-study pipeline diagram
+headshot.jpg/.webp      Case-study portrait (WebP served, JPG fallback)
+architecture-diagram.png/.webp  Pipeline diagram (WebP served, PNG fallback)
 Pedro_Serio_CV.pdf      Downloadable CV
 docs/                   Break-test evidence
 ```
@@ -39,17 +45,27 @@ python3 -m http.server 8080
 # open http://localhost:8080
 ```
 
-Netlify Forms posts (`POST /`) are only handled by Netlify, not by a plain
-static server.
+This serves the static pages, but the contact form now posts to
+`/.netlify/functions/contact`, which a plain static server does not run. To
+exercise the validation/dedup logic locally:
+
+```bash
+node tests/contact.test.js          # pure validation + dedup-key rules
+node tests/contact.handler.test.js  # full handler with Blobs/fetch mocked
+```
 
 ## Deploy
 
 The repo is configured for Netlify with `publish = "."`. Push to the connected
-Git branch (or drag the folder into the Netlify UI). There is no build command.
+Git branch (or drag the folder into the Netlify UI). There is no build command,
+but because `package.json` exists Netlify installs dependencies (`@netlify/blobs`)
+and `NODE_VERSION = "22"` is set in `netlify.toml` for the function runtime.
 
-The contact form uses [Netlify Forms](https://docs.netlify.com/forms/setup/)
-(`data-netlify="true"` + `form-name` hidden input). It must exist in the HTML at
-deploy time. Submissions appear in the Netlify dashboard.
+The contact form still uses
+[Netlify Forms](https://docs.netlify.com/forms/setup/) (`data-netlify="true"` +
+`form-name` hidden input) and must exist in the HTML at deploy time. The form
+posts to the function, which validates and then forwards the clean submission to
+Netlify Forms, so submissions still appear in the dashboard.
 
 ## SEO / social
 
@@ -68,16 +84,22 @@ Post Inspector, or a Slack/Discord unfurl).
 
 ## Form hardening
 
-Client-side: `required`, `type="email"`, `minlength`/`maxlength`, whitespace
-`pattern`s, plus a small inline script that trims input and prevents double
-submits. Without JavaScript the HTML constraints still apply.
+**Server-side (authoritative):** `netlify/functions/contact.js` is the form's
+`action`. It trims and validates name/email/message, enforces length limits,
+drops the honeypot, and de-duplicates identical submissions within a 10-minute
+window using Netlify Blobs (atomic `onlyIfNew`). Invalid input returns a `400`
+error page and is never forwarded. Only a valid submission reaches `/thanks/`
+and the Netlify Forms dashboard.
 
-Known limitation: there is no server-side validation, so a direct scripted POST
-can still create an entry. The honeypot (`bot-field`) plus Netlify spam
-filtering are the mitigation. See `HARDENING-REVIEW.md` for the full list.
+**Client-side (fast feedback):** `required`, `type="email"`,
+`minlength`/`maxlength`, whitespace `pattern`s, plus `assets/form.js` which trims
+input and prevents double submits.
 
 ## Security headers
 
-`netlify.toml` sets `Content-Security-Policy`, `X-Frame-Options`,
-`X-Content-Type-Options`, `Referrer-Policy`, and `Permissions-Policy`, and adds
-a one-week cache for images/PDF.
+`netlify.toml` sets a strict `Content-Security-Policy` (`script-src 'self'`,
+`style-src 'self' https://fonts.googleapis.com` — **no** `'unsafe-inline'`),
+plus `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, and
+`Permissions-Policy`. Inline page styles/scripts live in `assets/`; inline
+JSON-LD is a data block and is not subject to `script-src`. Images/PDF/CSS/JS
+get a one-week cache.
