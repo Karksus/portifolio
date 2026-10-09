@@ -101,7 +101,16 @@ Inspector, or a Slack/Discord unfurl).
 - [ ] Reproduce the four form abuse cases against the fixed deploy (empty, garbage, whitespace, double submit).
 - [x] Confirm `robots.txt`, `sitemap.xml`, custom 404, and `share-card.png` load. *(verified live 2026-10-08 — see Deployment verification)*
 - [ ] Validate the social preview with a card validator for `https://pedro-serio.netlify.app/`.
-- [ ] Confirm the security headers are present on the deployed response (`curl -I`).
+- [x] Confirm the security headers are present on the deployed response. *(verified live 2026-10-08: all six present)*
+
+  One-liner — returns `6` when every header is present:
+
+  ```bash
+  curl -sI https://pedro-serio.netlify.app/ \
+    | grep -ciE '^(content-security-policy|strict-transport-security|x-frame-options|x-content-type-options|referrer-policy|permissions-policy):'
+  ```
+
+  Expected: `6`. Full list: `curl -sI https://pedro-serio.netlify.app/ | tr -d '\r'`. Headers are added by Netlify's CDN from `netlify.toml`, so they only appear on the deployed response, never on a local static server.
 - [ ] Read the known-limitations list and decide whether any must become fix-now.
 - [ ] Delete the "Break Test" submissions from the Netlify Forms dashboard after review.
 
