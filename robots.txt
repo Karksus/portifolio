@@ -4,3 +4,6 @@ Allow: /
 
 # Thank-you and 404 pages are not for crawlers
 Disallow: /thanks/
+
+# Sitemap location
+Sitemap: https://pedro-serio.netlify.app/sitemap.xml
