@@ -101,6 +101,17 @@ Inspector, or a Slack/Discord unfurl).
 - [ ] Reproduce the four form abuse cases against the fixed deploy (empty, garbage, whitespace, double submit).
 - [x] Confirm `robots.txt`, `sitemap.xml`, custom 404, and `share-card.png` load. *(verified live 2026-10-08 — see Deployment verification)*
 - [ ] Validate the social preview with a card validator for `https://pedro-serio.netlify.app/`.
+
+  Paste the URL into a validator and confirm the card renders (title + description + `share-card.png`):
+
+  - Facebook Sharing Debugger — <https://developers.facebook.com/tools/debug/> (best diagnostic; use **Scrape Again** after tag changes to bust the cache)
+  - LinkedIn Post Inspector — <https://www.linkedin.com/post-inspector/>
+  - Generic (all networks at once) — <https://www.opengraph.xyz/> or <https://metatags.io/>
+  - Real-world test — paste the link into Slack/Discord/iMessage and check the unfurl
+
+  Machine-verifiable side is already confirmed live (2026-10-08): all `og:*` + `twitter:*` tags present, `og:image` is an **absolute** URL, and `share-card.png` returns `200 image/png`, 1200×630. Only the visual appearance still needs a human eye.
+
+  Pass condition: image shown, title "Pedro Serio — Cloud Infrastructure for Scientific Data", description "I turn messy scientific data operations into cloud infrastructure that doesn't fail quietly.", card type `summary_large_image`.
 - [x] Confirm the security headers are present on the deployed response. *(verified live 2026-10-08: all six present)*
 
   One-liner — returns `6` when every header is present:
