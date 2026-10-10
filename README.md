@@ -13,7 +13,7 @@ No build step, no framework — Netlify serves the files as-is.
 `'unsafe-inline'`, WebP images) is **applied and verified locally** and ships on
 the next deploy. See
 [Deployment verification](HARDENING-REVIEW.md#deployment-verification) and
-[Round-2 local verification](HARDENING-REVIEW.md#round-2-local-verification-2026-10-08).
+[Solved limitations and fixes](HARDENING-REVIEW.md#solved-limitations-and-fixes).
 
 ## Structure
 
@@ -28,14 +28,12 @@ share-card.svg/.png     1200×630 social-share image (og:image)
 netlify.toml            Publish dir, security headers, caching
 assets/                 External CSS (per page) + form.js / copy.js
 netlify/functions/      contact.js — server-side validation + dedup
-tests/                  Node unit + handler tests for the function
 package.json            Declares @netlify/blobs (used by the function)
 favicon.svg             Site icon
 connective-tissue.svg   Hero background motif
 headshot.jpg/.webp      Case-study portrait (WebP served, JPG fallback)
 architecture-diagram.png/.webp  Pipeline diagram (WebP served, PNG fallback)
 Pedro_Serio_CV.pdf      Downloadable CV
-docs/                   Break-test evidence
 ```
 
 ## Local preview
@@ -46,13 +44,8 @@ python3 -m http.server 8080
 ```
 
 This serves the static pages, but the contact form now posts to
-`/.netlify/functions/contact`, which a plain static server does not run. To
-exercise the validation/dedup logic locally:
-
-```bash
-node tests/contact.test.js          # pure validation + dedup-key rules
-node tests/contact.handler.test.js  # full handler with Blobs/fetch mocked
-```
+`/.netlify/functions/contact`, which a plain static server does not run. That
+endpoint — and its server-side validation and dedup — only runs on Netlify.
 
 ## Deploy
 
