@@ -1,4 +1,4 @@
-# https://pedro-serio.netlify.app/robots.txt
+# https://pedroserio.is-a.dev/robots.txt
 User-agent: *
 Allow: /
 
@@ -6,4 +6,4 @@ Allow: /
 Disallow: /thanks/
 
 # Sitemap location
-Sitemap: https://pedro-serio.netlify.app/sitemap.xml
+Sitemap: https://pedroserio.is-a.dev/sitemap.xml

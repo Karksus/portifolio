@@ -4,7 +4,7 @@ Static portfolio site for Pedro Serio, a (Bio)DevOps developer building
 event-driven AWS infrastructure for genomics and biotech data pipelines.
 No build step, no framework — Netlify serves the files as-is.
 
-**Live:** https://pedro-serio.netlify.app
+**Live:** https://pedroserio.is-a.dev
 **Hardening review (break-your-own-site):** [`HARDENING-REVIEW.md`](HARDENING-REVIEW.md)
 
 **Deploy status:** round-1 hardening (custom `404.html`, `robots.txt`,
@@ -66,7 +66,7 @@ Every public page has a unique title, meta description, canonical URL, Open
 Graph + Twitter card tags, and a shared `share-card.png`. The home page also
 carries `Person` JSON-LD. The thanks page is `noindex, nofollow`.
 
-To make the site findable, submit `https://pedro-serio.netlify.app/sitemap.xml`
+To make the site findable, submit `https://pedroserio.is-a.dev/sitemap.xml`
 in Google Search Console after deploying.
 
 The four discovery assets are verified live: `robots.txt` (`200 text/plain`),
