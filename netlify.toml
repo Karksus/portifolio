@@ -38,6 +38,32 @@
       frame-ancestors 'none'
     """
 
+# --- Hide non-site files ----------------------------------------------------
+# Netlify publishes the whole repo (publish = "."), which would otherwise expose
+# these files as static assets. `force = true` makes the rule win over the real
+# file. The contact function is still invoked via /.netlify/functions/contact —
+# this only blocks the raw /netlify/* source tree.
+[[redirects]]
+  from = "/README.md"
+  to = "/404.html"
+  status = 404
+  force = true
+[[redirects]]
+  from = "/package.json"
+  to = "/404.html"
+  status = 404
+  force = true
+[[redirects]]
+  from = "/HARDENING-REVIEW.md"
+  to = "/404.html"
+  status = 404
+  force = true
+[[redirects]]
+  from = "/netlify/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
 # --- Caching ----------------------------------------------------------------
 # Fingerprinting doesn't exist for a hand-written static site, so keep asset
 # caching moderate (1 week) rather than "immutable", to avoid serving stale

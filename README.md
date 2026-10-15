@@ -4,16 +4,12 @@ Static portfolio site for Pedro Serio, a (Bio)DevOps developer building
 event-driven AWS infrastructure for genomics and biotech data pipelines.
 No build step, no framework — Netlify serves the files as-is.
 
-**Live:** https://pedroserio.is-a.dev
-**Hardening review (break-your-own-site):** [`HARDENING-REVIEW.md`](HARDENING-REVIEW.md)
+**Live:** https://pedroserio.is-a.dev (custom domain) · https://pedro-serio.netlify.app (Netlify default)
 
-**Deploy status:** round-1 hardening (custom `404.html`, `robots.txt`,
-`sitemap.xml`, `share-card.png`, security headers) is **live** (verified
-2026-10-08). Round-2 hardening (server-side form validation, strict CSP without
-`'unsafe-inline'`, WebP images) is **applied and verified locally** and ships on
-the next deploy. See
-[Deployment verification](HARDENING-REVIEW.md#deployment-verification) and
-[Solved limitations and fixes](HARDENING-REVIEW.md#solved-limitations-and-fixes).
+**Status:** launch hardening verified live on `pedroserio.is-a.dev` — custom
+`404.html`, `robots.txt`, `sitemap.xml`, `share-card.png`, HSTS and security
+headers, server-side form validation, strict CSP without `'unsafe-inline'`,
+WebP images, and Cloudflare Web Analytics.
 
 ## Structure
 
@@ -49,10 +45,19 @@ endpoint — and its server-side validation and dedup — only runs on Netlify.
 
 ## Deploy
 
-The repo is configured for Netlify with `publish = "."`. Push to the connected
-Git branch (or drag the folder into the Netlify UI). There is no build command,
-but because `package.json` exists Netlify installs dependencies (`@netlify/blobs`)
-and `NODE_VERSION = "22"` is set in `netlify.toml` for the function runtime.
+The repo is configured for Netlify with `publish = "."`. Deploy with the Netlify
+CLI + build, which bundles the serverless function:
+
+```bash
+netlify deploy --build --prod
+```
+
+(Do not use a raw API/zip deploy — it processes static files only and silently
+drops `netlify/functions/contact.js`.) There is no build command, but because
+`package.json` exists Netlify installs dependencies (`@netlify/blobs`) and
+`NODE_VERSION = "22"` is set in `netlify.toml` for the function runtime.
+`README.md`, `package.json`, and the raw `netlify/` sources are excluded from
+public serving via `netlify.toml` redirects.
 
 The contact form still uses
 [Netlify Forms](https://docs.netlify.com/forms/setup/) (`data-netlify="true"` +
@@ -90,7 +95,8 @@ input and prevents double submits.
 
 ## Security headers
 
-`netlify.toml` sets a strict `Content-Security-Policy` (`script-src 'self'`,
+`netlify.toml` sets a strict `Content-Security-Policy`
+(`script-src 'self' https://static.cloudflareinsights.com`,
 `style-src 'self' https://fonts.googleapis.com` — **no** `'unsafe-inline'`),
 plus `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, and
 `Permissions-Policy`. Inline page styles/scripts live in `assets/`; inline
