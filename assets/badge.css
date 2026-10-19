@@ -1,0 +1,66 @@
+/* FlyRank AI Internship verification badge (footer).
+   Styles externalised so the site keeps its strict CSP (no 'unsafe-inline'). */
+
+.footer-badge {
+  margin-top: 14px;
+}
+
+.flyrank-badge {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0 0 3px;
+  border: 0;
+  border-bottom: 1px solid rgba(84, 227, 153, 0.28);
+  background: none;
+  text-decoration: none;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-style: normal;
+  line-height: 1.25;
+  -webkit-font-smoothing: antialiased;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  row-gap: 2px;
+  flex-wrap: wrap;
+  font-size: 14px;
+  color: rgba(5, 31, 33, 0.7);
+}
+
+.flyrank-badge svg {
+  display: block;
+  flex: none;
+  opacity: 1;
+  transform: none;
+  max-width: none;
+}
+
+.flyrank-badge__label {
+  white-space: nowrap;
+  color: inherit;
+}
+
+.flyrank-badge__sep {
+  color: rgba(5, 31, 33, 0.5);
+}
+
+.flyrank-badge__status {
+  font-weight: 600;
+  color: #1a7a4a;
+}
+
+.flyrank-badge__id {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11.5px;
+  color: rgba(5, 31, 33, 0.5);
+}
+
+.flyrank-badge:hover .flyrank-badge__label,
+.flyrank-badge:focus-visible .flyrank-badge__label {
+  color: #1a7a4a;
+}
+
+.flyrank-badge:focus-visible {
+  outline: 2px solid #1a7a4a;
+  outline-offset: 2px;
+  border-radius: 3px;
+}
